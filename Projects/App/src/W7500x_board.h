@@ -88,20 +88,24 @@
 		#define DEVICE_ID_DEFAULT               "W7500-S2E" // Device name
         #define DEVICE_UART_CNT		            1 // Not used
     #elif (DEVICE_BOARD_NAME == WIZ752SR_12x)  
-		//#define __W7500P__
+		#define __W7500P__  //mason
 		//#define __USE_UART_IF_SELECTOR__	
 		//#define __USE_EXT_EEPROM__			
 		//#define __USE_BOOT_ENTRY__			
 		#define __USE_APPBACKUP_AREA__		
 		#define __USE_GPIO_HARDWARE_FLOWCONTROL__
 		#define __USE_USERS_GPIO__
-        //#define __USE_HW_TRIG_PIN__
-        #define __USE_PHYLINK_CHECK_PIN__
-        //#define __USE_UART_DTR_DSR__
-        //#define __USE_STATUS_PHYLINK_PIN__
-        #define __USE_STATUS_TCPCONNECT_PIN__
-		#define DEVICE_CLOCK_SELECT	            CLOCK_SOURCE_EXTERNAL
-		#define DEVICE_PLL_SOURCE_CLOCK         PLL_SOURCE_12MHz
+    //#define __USE_HW_TRIG_PIN__
+    #define __USE_PHYLINK_CHECK_PIN__
+    //#define __USE_UART_DTR_DSR__
+    //#define __USE_STATUS_PHYLINK_PIN__
+    #define __USE_STATUS_TCPCONNECT_PIN__
+		//#define DEVICE_CLOCK_SELECT	            CLOCK_SOURCE_EXTERNAL //mason
+		//#define DEVICE_PLL_SOURCE_CLOCK         PLL_SOURCE_12MHz
+		//#define DEVICE_TARGET_SYSTEM_CLOCK      SYSTEM_CLOCK_48MHz
+
+    #define DEVICE_CLOCK_SELECT	            CLOCK_SOURCE_EXTERNAL
+		#define DEVICE_PLL_SOURCE_CLOCK         PLL_SOURCE_8MHz
 		#define DEVICE_TARGET_SYSTEM_CLOCK      SYSTEM_CLOCK_48MHz
 		#define DEVICE_ID_DEFAULT               "WIZ752SR-12x" // Device name
         #define DEVICE_UART_CNT		            2 // Not used

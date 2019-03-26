@@ -201,7 +201,8 @@ static void W7500x_Init(void)
 	
 	/* SysTick_Config */
 	SysTick_Config((GetSystemClock()/1000));
-	
+	delay(10);
+
 #ifdef _MAIN_DEBUG_
 	printf("\r\n >> W7500x MCU Clock Settings ===============\r\n"); 
 	printf(" - GetPLLSource: %s, %lu (Hz)\r\n", GetPLLSource()?"External":"Internal", DEVICE_PLL_SOURCE_CLOCK);
