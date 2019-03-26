@@ -1,1 +1,1 @@
-# W7500x_Application_Template
+# W7500x_Application_Template_W7500P
