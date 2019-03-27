@@ -95,7 +95,7 @@ int main(void)
 		dev_config->network_connection[i].working_state = ST_OPEN;
 		S2E_UART_Configuration(i);	// UART Initialization 
 	}
-
+  
 	/* Debug UART: Device information print out */
 	if(dev_config->serial_common.serial_debug_en == ENABLE)
 	{

@@ -506,7 +506,7 @@ uint8_t check_mac_address(void)
 	uint8_t mac_str[MACSTR_SIZE] = {0, };
 	uint8_t trep[MACSTR_SIZE] = {0, };
 	uint8_t ret = 0;
-	
+
 	if(((dev_config->network_common.mac[0] != 0x00) || (dev_config->network_common.mac[1] != 0x08) || (dev_config->network_common.mac[2] != 0xDC))  ||
 		((dev_config->network_common.mac[0] == 0xff) && (dev_config->network_common.mac[1] == 0xff) && (dev_config->network_common.mac[2] == 0xff)))
 	{

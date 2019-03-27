@@ -396,7 +396,8 @@ void set_connection_status_io(uint16_t pin, uint8_t channel, uint8_t set)
 	if(pin == PHYLINK)
 	{
 #ifdef __USE_STATUS_PHYLINK_PIN__
-    #if ((DEVICE_BOARD_NAME == WIZ750JR) || (DEVICE_BOARD_NAME == WIZ750SR))
+    //#if ((DEVICE_BOARD_NAME == WIZ750JR) || (DEVICE_BOARD_NAME == WIZ750SR)) //mason 190327
+    #if ((DEVICE_BOARD_NAME == WIZ750JR) || (DEVICE_BOARD_NAME == WIZ750SR) || (DEVICE_BOARD_NAME == WIZ752SR_12x))
         if(set == ON)
         {
             if(serial_option[0].dtr_en == 0) 
@@ -608,7 +609,8 @@ void check_phylink_status(void)
 	static uint8_t prev_link_status = 1;
 	uint8_t link_status;
 	
-#if ((DEVICE_BOARD_NAME == WIZ750SR) || (DEVICE_BOARD_NAME == W7500P_S2E) || (DEVICE_BOARD_NAME == WIZ750SR_1xx))
+//#if ((DEVICE_BOARD_NAME == WIZ750SR) || (DEVICE_BOARD_NAME == W7500P_S2E) || (DEVICE_BOARD_NAME == WIZ750SR_1xx)) //Mason 190327
+#if ((DEVICE_BOARD_NAME == WIZ750SR) || (DEVICE_BOARD_NAME == W7500P_S2E) || (DEVICE_BOARD_NAME == WIZ750SR_1xx) || (DEVICE_BOARD_NAME == WIZ752SR_12x))
 	link_status = get_phylink();
 #else
 	link_status = 0;
@@ -632,7 +634,8 @@ void gpio_handler_timer_msec(void)
 	if(++phylink_check_time_msec >= PHYLINK_CHECK_CYCLE_MSEC)
 	{
 		phylink_check_time_msec = 0;
-		//check_phylink_status();
+		//check_phylink_status();   //mason 190327
+		check_phylink_status();
 		
 		flag_check_phylink = 1;
 	}
