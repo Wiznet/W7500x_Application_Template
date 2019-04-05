@@ -13,25 +13,24 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *********************************************************************************************************************************************************/
 #include <stdio.h>
+#include "W7500x_board.h"
 #include "W7500x_miim.h"
-#ifdef __W7500P__
-	// PB_05, PB_12 pull down
-	*(volatile uint32_t *)(0x41003070) = 0x61;
-	*(volatile uint32_t *)(0x41003054) = 0x61;
-#endif
 
 #define __DEF_DBG_LEVEL1__
 
-
-extern void delay(__IO uint32_t nCount);
-
-// Default MDC/MDIO Pin settings for W7500P
-// It can be changed by W7500x_MDC / W7500x_MDIO defines
-static uint16_t MDIO = GPIO_Pin_15;
-static uint16_t MDC  = GPIO_Pin_14;
+//extern void delay(__IO uint32_t nCount);
 
 uint32_t PHY_ADDR_IP101G; //(phy_id())
 uint32_t PHY_ADDR;// PHY_ADDR_IP101G
+
+void _delay(uint32_t nCount)
+{
+	uint32_t i=0;
+	while(i < (1000*nCount))
+	{
+		i++;
+	}	
+}
 
 uint32_t link(void)
 {
@@ -70,12 +69,8 @@ void mdio_init(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin_MDC, uint16_t GPIO_Pin_MDI
     GPIO_InitDef.GPIO_Mode = GPIO_Mode_OUT;
     GPIO_Init(GPIOx, &GPIO_InitDef);
 
-    PAD_AFConfig(PAD_PB, GPIO_Pin_MDIO, PAD_AF1);  
-    PAD_AFConfig(PAD_PB, GPIO_Pin_MDC, PAD_AF1);  
-
-    MDC = GPIO_Pin_MDC;
-    MDIO = GPIO_Pin_MDIO;
-
+    PAD_AFConfig(PAD_PB, W7500x_MDIO, PAD_AF1);  
+    PAD_AFConfig(PAD_PB, W7500x_MDC, PAD_AF1);  
     PHY_ADDR = (phy_id());
 }
 
@@ -85,14 +80,14 @@ void output_MDIO(GPIO_TypeDef* GPIOx, uint32_t val, uint32_t n)
     for(val <<= (32-n); n; val<<=1, n--)
     {
         if(val & 0x80000000)
-            GPIO_SetBits(GPIOx, MDIO); 
+            GPIO_SetBits(GPIOx, W7500x_MDIO); 
         else
-            GPIO_ResetBits(GPIOx, MDIO);
+            GPIO_ResetBits(GPIOx, W7500x_MDIO);
 
-        delay(1);
-        GPIO_SetBits(GPIOx, MDC); 
-        delay(1);
-        GPIO_ResetBits(GPIOx, MDC);
+        _delay(1);
+        GPIO_SetBits(GPIOx, W7500x_MDC); 
+        _delay(1);
+        GPIO_ResetBits(GPIOx, W7500x_MDC);
     }
 }
 
@@ -102,11 +97,11 @@ uint32_t input_MDIO(GPIO_TypeDef* GPIOx)
     for(i=0; i<16; i++)
     {
         val <<=1;
-        GPIO_SetBits(GPIOx, MDC); 
-        delay(1);
-        GPIO_ResetBits(GPIOx, MDC);
-        delay(1);
-        val |= GPIO_ReadInputDataBit(GPIOx, MDIO);
+        GPIO_SetBits(GPIOx, W7500x_MDC); 
+		_delay(1);
+        GPIO_ResetBits(GPIOx, W7500x_MDC);
+        _delay(1);
+        val |= GPIO_ReadInputDataBit(GPIOx, W7500x_MDIO);
     }
     return (val);
 }
@@ -114,24 +109,24 @@ uint32_t input_MDIO(GPIO_TypeDef* GPIOx)
 void turnaround_MDIO(GPIO_TypeDef* GPIOx)
 {
 
-    GPIOx->OUTENCLR = MDIO ;
+    GPIOx->OUTENCLR = W7500x_MDIO ;
 
-    delay(1);
-    GPIO_SetBits(GPIOx, MDC); 
-    delay(1);
-    GPIO_ResetBits(GPIOx, MDC);
-    delay(1);
+    _delay(1);
+    GPIO_SetBits(GPIOx, W7500x_MDC); 
+    _delay(1);
+    GPIO_ResetBits(GPIOx, W7500x_MDC);
+    _delay(1);
 }
 
 void idle_MDIO(GPIO_TypeDef* GPIOx)
 {
 
-    GPIOx->OUTENSET = MDIO ;
+    GPIOx->OUTENSET = W7500x_MDIO ;
 
-    GPIO_SetBits(GPIOx,MDC); 
-    delay(1);
-    GPIO_ResetBits(GPIOx, MDC);
-    delay(1);
+    GPIO_SetBits(GPIOx,W7500x_MDC); 
+    _delay(1);
+    GPIO_ResetBits(GPIOx, W7500x_MDC);
+    _delay(1);
 }
 
 uint32_t mdio_read(GPIO_TypeDef* GPIOx, uint32_t PhyRegAddr)
