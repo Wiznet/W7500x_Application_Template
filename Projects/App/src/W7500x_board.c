@@ -69,15 +69,24 @@ static void PHY_Init(void)
 #endif
 
 #ifdef __W7500P__ // W7500P
-	// PB_05, PB_12 pull down
-	*(volatile uint32_t *)(0x41003070) = 0x61; // RXDV - set pull down (PB_12)
-	*(volatile uint32_t *)(0x41003054) = 0x61; // COL  - set pull down (PB_05)
+    // PB_05, PB_12 pull down
+    *(volatile uint32_t *)(0x41003070) = 0x61; // RXDV - set pull down (PB_12)
+    *(volatile uint32_t *)(0x41002054) = 0x01; // PB 05 AFC
+    *(volatile uint32_t *)(0x41003054) = 0x61; // COL  - set pull down (PB_05)
+    *(volatile uint32_t *)(0x41002058) = 0x01; // PB 06 AFC
+    *(volatile uint32_t *)(0x41003058) = 0x61; // DUP  - set pull down (PB_06)
+    
+    // PHY reset pin pull-up
+    *(volatile uint32_t *)(0x410020D8) = 0x01; // PD 06 AFC[00 : zero / 01 : PD06]
+    *(volatile uint32_t *)(0x410030D8) = 0x02; // PD 06 PADCON
+    *(volatile uint32_t *)(0x45000004) = 0x40; // GPIOD DATAOUT [PD06 output 1]
+    *(volatile uint32_t *)(0x45000010) = 0x40; // GPIOD OUTENSET    
 #endif
 
 #ifdef __DEF_USED_MDIO__ 
 	/* mdio Init */
 	mdio_init(GPIOB, W7500x_MDC, W7500x_MDIO);
-	//mdio_write(GPIOB, PHYREG_CONTROL, CNTL_RESET); // PHY Reset
+	mdio_write(GPIOB, PHYREG_CONTROL, CNTL_RESET); // PHY Reset
 	
 	#ifdef __W7500P__ // W7500P
 		//set_link(FullDuplex10);
@@ -107,12 +116,12 @@ void init_phylink(void)
 
 uint8_t get_phylink(void)
 {
-#ifdef __USE_PHYLINK_CHECK_PIN__
+//#ifdef __USE_PHYLINK_CHECK_PIN__
     // PHYlink input; Active low
-    return GPIO_ReadInputDataBit(PHYLINK_IN_PORT, PHYLINK_IN_PIN);
-#else
+//    return GPIO_ReadInputDataBit(PHYLINK_IN_PORT, PHYLINK_IN_PIN);
+//#else
     return !link();
-#endif
+//#endif
 }
 
 // Hardware mode switch pin, active low

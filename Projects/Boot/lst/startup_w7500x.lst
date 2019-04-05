@@ -407,11 +407,10 @@ ARM Macro Assembler    Page 7
               00000800 
               00000400 
               00000000 
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0 --apcs=interw
-ork --depend=.\obj\startup_w7500x.d -o.\obj\startup_w7500x.o -IC:\Keil_v5\ARM\R
-V31\INC -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__UVISION_VERSION SETA 515"
- --list=.\lst\startup_w7500x.lst ..\..\Libraries\CMSIS\Device\WIZnet\W7500\Sour
-ce\ARM\startup_W7500x.s
+Command Line: --debug --xref --cpu=Cortex-M0 --apcs=interwork --depend=.\obj\st
+artup_w7500x.d -o.\obj\startup_w7500x.o -IC:\Keil_v5\ARM\RV31\INC -IC:\Keil_v5\
+ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include --list=.\lst\startup_w7500x.lst ..\..\L
+ibraries\CMSIS\Device\WIZnet\W7500\Source\ARM\startup_W7500x.s
 
 
 
@@ -1068,4 +1067,4 @@ startup_W7500x.s
       None
 Comment: __use_two_region_memory unused
 3 symbols
-386 symbols in table
+385 symbols in table

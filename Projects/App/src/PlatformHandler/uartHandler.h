@@ -115,7 +115,7 @@ void uart_rs485_rs422_init(uint8_t uartNum);
 void uart_rs485_disable(uint8_t uartNum);
 void uart_rs485_enable(uint8_t uartNum);
 
-#define MIN(_a, _b) (_a < _b) ? _a : _b
+//#define MIN(_a, _b) (_a < _b) ? _a : _b
 #define MEM_FREE(mem_p) do{ if(mem_p) { free(mem_p); mem_p = NULL; } }while(0)	//
 
 #endif /* UARTHANDLER_H_ */

@@ -102,9 +102,10 @@ int main(void)
 		display_Dev_Info_header();
 		display_Dev_Info_main();
 	}
-	
-    printf(" - PHY Link status: %x\r\n", get_phylink());
-    printf("%s\r\n", STR_BAR);
+
+	while(get_phylink());
+	printf("PHY Link status: %s\r\n", get_phylink()?"LINK OFF":"LINK ON");
+	printf("%s\r\n", STR_BAR);
 
 	/* Initialize Network Information: DHCP or Static IP allocation */
 	if(dev_config->network_option.dhcp_use == ENABLE)
