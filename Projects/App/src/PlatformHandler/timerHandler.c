@@ -15,9 +15,11 @@ static volatile uint8_t  min_cnt = 0;
 static volatile uint32_t hour_cnt = 0;
 static volatile uint32_t devtime_sec = 0;
 static volatile uint32_t devtime_msec = 0;
+static volatile uint8_t phy_check_sec = 0;
 
-static uint8_t enable_phylink_check = ENABLE;
+static uint8_t enable_phylink_check = DISABLE;
 static volatile uint32_t phylink_down_time_msec;
+extern uint8_t flag_check_phylink;
 
 void Timer0_Configuration(void)
 {
@@ -67,8 +69,8 @@ void Timer0_IRQ_Handler(void)
 				phylink_down_time_msec = 0;
 		}
 		
-		if(flag_s2e_application_running == SET)
-			gpio_handler_timer_msec();
+		//if(flag_s2e_application_running == SET)
+		//	gpio_handler_timer_msec();
 		
 		/* Second Process */
 		if(msec_cnt >= 1000 - 1) //second //if((msec_cnt % 1000) == 0) 
@@ -82,6 +84,14 @@ void Timer0_IRQ_Handler(void)
 			DNS_time_handler();		// Time counter for DNS timeout
 			
 			devtime_sec++; // device time counter, Can be updated this counter value by time protocol like NTP.
+
+
+			if(phy_check_sec++ == PHY_CHECK_TIME)
+			{
+				phy_check_sec = 0;
+				flag_check_phylink = 1;			
+			}
+
 			
 #if (DEVICE_BOARD_NAME == WIZ752SR_12x)
             LED_Toggle(LED1);

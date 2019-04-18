@@ -24,7 +24,7 @@ PAD_Type LED_PAD[LEDn] = {LED1_GPIO_PAD, LED2_GPIO_PAD};
 PAD_AF_TypeDef LED_PAD_AF[LEDn] = {LED1_GPIO_PAD_AF, LED2_GPIO_PAD_AF};
 
 volatile uint16_t phylink_check_time_msec = 0;
-uint8_t flag_check_phylink = 0;
+
 uint8_t flag_hw_trig_enable = 0;
 
 /* W7500x Board Initialization */
@@ -114,6 +114,7 @@ void init_phylink(void)
 }
 
 
+
 uint8_t get_phylink(void)
 {
 //#ifdef __USE_PHYLINK_CHECK_PIN__
@@ -123,6 +124,7 @@ uint8_t get_phylink(void)
     return !link();
 //#endif
 }
+
 
 // Hardware mode switch pin, active low
 void init_hw_trig_pin(void)

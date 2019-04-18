@@ -79,7 +79,7 @@ uint8_t get_flowcontrol_dsr_pin(void);
 
 
 // Check the PHY link status 
-void check_phylink_status(void);
+uint8_t check_phylink_status(void);
 void gpio_handler_timer_msec(void); // This function have to call every 1 millisecond by Timer IRQ handler routine.
 
 #endif

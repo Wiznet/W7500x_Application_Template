@@ -110,6 +110,7 @@
 		
 		#define DEVICE_ID_DEFAULT               "WIZ752SR-12x" // Device name
         #define DEVICE_UART_CNT		            2 // Not used
+		#define PHY_CHECK_TIME					1
 	#else
 		//#define __USE_UART_IF_SELECTOR__
 		#define __USE_EXT_EEPROM__
@@ -462,7 +463,6 @@
 	} Led_TypeDef;
 
 	extern volatile uint16_t phylink_check_time_msec;
-	extern uint8_t flag_check_phylink;
 	extern uint8_t flag_hw_trig_enable;
 	
 	void W7500x_Board_Init(void);

@@ -28,6 +28,8 @@
 	const char*    USER_IO_DIR_STR[] =         {"Input", "Output"};
 #endif
 
+static uint8_t prev_link_status = 1;
+	
 /**
   * @brief  I/O Intialize Function
   */
@@ -604,9 +606,8 @@ uint8_t get_flowcontrol_dsr_pin(void)
 }
 
 // Check the PHY link status
-void check_phylink_status(void)
+uint8_t check_phylink_status(void)
 {
-	static uint8_t prev_link_status = 1;
 	uint8_t link_status;
 	
 //#if ((DEVICE_BOARD_NAME == WIZ750SR) || (DEVICE_BOARD_NAME == W7500P_S2E) || (DEVICE_BOARD_NAME == WIZ750SR_1xx)) //Mason 190327
@@ -620,25 +621,12 @@ void check_phylink_status(void)
 	{
 		printf("PHY Link status: %s\r\n", link_status?"LINK OFF":"LINK ON");
 		printf("%s\r\n", STR_BAR);
-		if(link_status == 0x00)
+		if(link_status == 0)
 			set_connection_status_io(PHYLINK, 0, ON); 
 		else
 			set_connection_status_io(PHYLINK, 0, OFF); 	// PHY Link down
-		
+
 		prev_link_status = link_status;
 	}
-}
-
-// This function have to call every 1 millisecond by Timer IRQ handler routine.
-void gpio_handler_timer_msec(void)
-{
-	// PHY link check
-	if(++phylink_check_time_msec >= PHYLINK_CHECK_CYCLE_MSEC)
-	{
-		phylink_check_time_msec = 0;
-		//check_phylink_status();   //mason 190327
-		check_phylink_status();
-		
-		flag_check_phylink = 1;
-	}
+	return link_status;
 }

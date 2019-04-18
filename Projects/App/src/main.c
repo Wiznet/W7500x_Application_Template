@@ -70,6 +70,7 @@ static __IO uint32_t TimingDelay;
 /* Public variables ----------------------------------------------------------*/
 uint8_t g_send_buf[DEVICE_UART_CNT][DATA_BUF_SIZE];
 uint8_t g_recv_buf[DEVICE_UART_CNT][DATA_BUF_SIZE];
+uint8_t flag_check_phylink = 0;
 
 /**
   * @brief  Main program
@@ -103,9 +104,7 @@ int main(void)
 		display_Dev_Info_main();
 	}
 
-	while(get_phylink());
-	printf("PHY Link status: %s\r\n", get_phylink()?"LINK OFF":"LINK ON");
-	printf("%s\r\n", STR_BAR);
+	while(check_phylink_status());
 
 	/* Initialize Network Information: DHCP or Static IP allocation */
 	if(dev_config->network_option.dhcp_use == ENABLE)
@@ -152,7 +151,8 @@ int main(void)
 	}
 	
 	printf("%s\r\n", STR_BAR);
-
+	flag_check_phylink = 0;
+	
 	while(1) 
 	{
 		do_segcp();
@@ -162,12 +162,15 @@ int main(void)
 		if(dev_config->network_option.dhcp_use == ENABLE) 
 			DHCP_run(); // DHCP client handler for IP renewal
 		
-		if(flag_check_phylink == SET)
+
+		if (flag_check_phylink)
 		{
 			// ## debugging: PHY link
 			//printf("PHY Link status: %x\r\n", get_phylink());
-            flag_check_phylink = RESET;	
+			check_phylink_status();
+            flag_check_phylink = 0;	
 		}
+
 		
 		for(i=0; i<DEVICE_UART_CNT; i++)
 		{
@@ -180,6 +183,7 @@ int main(void)
 		}
 	} 
 } 
+
 
 /**
   * @brief  W7500x Initialize
