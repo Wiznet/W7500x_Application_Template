@@ -51,7 +51,7 @@ static uint8_t triggercode_idx;
 static uint8_t ch_tmp[3];
 /* User's buffer / size idx */
 extern uint8_t g_send_buf[DEVICE_UART_CNT][DATA_BUF_SIZE];
-extern uint8_t g_recv_buf[DEVICE_UART_CNT][DATA_BUF_SIZE];
+extern uint8_t g_recv_buf[DEVICE_UART_CNT][DATA_BUF_SIZE+2];
 volatile uint32_t u2e_size[DEVICE_UART_CNT] = {0,};
 volatile uint32_t e2u_size[DEVICE_UART_CNT] = {0,};
 /* UDP: Peer netinfo */
@@ -1120,6 +1120,8 @@ uint16_t get_serial_data(uint8_t channel)
   */
 void ether_to_uart(uint8_t channel)
 {
+	uint16_t data_size[2]={0,};
+	
 	struct __serial_option *serial_option = (struct __serial_option *)&(get_DevConfig_pointer()->serial_option);
     struct __serial_common *serial_common = (struct __serial_common *)&(get_DevConfig_pointer()->serial_common);
     struct __network_connection *network_connection = (struct __network_connection *)(get_DevConfig_pointer()->network_connection);
@@ -1181,7 +1183,16 @@ void ether_to_uart(uint8_t channel)
 		switch(getSn_SR(channel))
 		{
 			case SOCK_UDP: // UDP_MODE
-                e2u_size[channel] = recvfrom(channel, g_recv_buf[channel], len, peerip, &peerport);
+                e2u_size[channel] = recvfrom(channel, (uint8_t *)(g_recv_buf[channel]+2), len, peerip, &peerport);
+				//printf("e2u_size[%d] : %d \r\n", channel, e2u_size[channel]);
+				g_recv_buf[channel][0] = ((uint16_t)e2u_size[channel] & 0xff00) >> 8;
+				g_recv_buf[channel][1] = ((uint16_t)e2u_size[channel] & 0x00ff) ;
+				
+				e2u_size[channel] += 2; //for nuvoone, add header length
+			
+				//printf("data_size[0] : %d \r\n", data_size[0]);
+				//printf("data_size[1] : %d \r\n", data_size[1]);
+				
 				if(memcmp(peerip_tmp, peerip, 4) !=  0)
 				{
 					memcpy(peerip_tmp, peerip, 4);
@@ -1254,6 +1265,7 @@ void ether_to_uart(uint8_t channel)
 		}
 		else
 		{
+			
 			UART_Send_RB(UARTx, &txring[channel], g_recv_buf[channel], e2u_size[channel]);
 			e2u_size[channel] = 0;
 		}
