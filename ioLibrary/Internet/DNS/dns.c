@@ -536,6 +536,8 @@ int8_t DNS_run(uint8_t * dns_ip, uint8_t * name, uint8_t * ip_from_dns)
 		if ((len = getSn_RX_RSR(DNS_SOCKET)) > 0)
 		{
 			if (len > MAX_DNS_BUF_SIZE) len = MAX_DNS_BUF_SIZE;
+			// NEED TO FIX!!!!
+			// max length 확인 필요. 전달하는 버퍼 크기보다 큰 데이터가 넘어오는 경우 백프로 오류..누군가가 큰 패킷 보내면 바로 죽음. 여기서 len=DATA_BUF_SIZE 가 넘지 않도록 해준다음 아래 내용을 호출해야 한다.
 			len = recvfrom(DNS_SOCKET, pDNSMSG, len, ip, &port);
 #ifdef _DNS_DEBUG_
 			printf("> Receive DNS message from %d.%d.%d.%d(%d). len = %d\r\n", ip[0], ip[1], ip[2], ip[3],port,len);

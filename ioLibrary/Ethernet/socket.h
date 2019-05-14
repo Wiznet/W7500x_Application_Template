@@ -328,6 +328,38 @@ int32_t sendto(uint8_t sn, uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t
  */
 int32_t recvfrom(uint8_t sn, uint8_t * buf, uint16_t len, uint8_t * addr, uint16_t *port);
 
+/**
+ * @ingroup WIZnet_socket_APIs
+ * @brief Receive datagram of UDP or MACRAW
+ * @details This function is an application I/F function which is used to receive the data in other then TCP mode. \n
+ *          This function is used to receive UDP and MAC_RAW mode, and handle the header as well. 
+ *          This function can divide to received the packet data.
+ *          On the MACRAW SOCKET, the addr and port parameters are ignored.
+ * @note    In block io mode, it doesn't return until data reception is completed - data is filled as <I>len</I> in socket buffer
+ *          In non-block io mode, it return @ref SOCK_BUSY immediatly when <I>len</I> is greater than data size in socket buffer.
+ *
+ * @param sn   Socket number. It should be <b>0 ~ @ref \_WIZCHIP_SOCK_NUM_</b>.
+ * @param buf  Pointer buffer to read incoming data.
+ * @param len  The max data length of data in buf. 
+ *             When the received packet size <= len, receives data as packet sized.
+ *             When others, receives data as len.
+ * @param addr Pointer variable of destination IP address. It should be allocated 4 bytes.
+ *             It is valid only when the first call recvfrom for receiving the packet.
+ *             When it is valid, @ref  packinfo[7] should be set as '1' after call @ref getsockopt(sn, SO_PACKINFO, &packinfo).
+ * @param port Pointer variable of destination port number.
+ *             It is valid only when the first call recvform for receiving the packet.
+ *             When it is valid, @ref  packinfo[7] should be set as '1' after call @ref getsockopt(sn, SO_PACKINFO, &packinfo).
+ * @param framelength The udp data frame length.
+ *             It is valid when it is the first packet of data frame.
+ *             Otherwise, it is 0.
+ *
+ * @return	@b Success : This function return real received data size for success.\n
+ *          @b Fail    : @ref SOCKERR_DATALEN    - zero data length \n
+ *                       @ref SOCKERR_SOCKMODE   - Invalid operation in the socket \n
+ *                       @ref SOCKERR_SOCKNUM    - Invalid socket number \n
+ *                       @ref SOCKBUSY           - Socket is busy.
+ */
+
 
 /////////////////////////////
 // SOCKET CONTROL & OPTION //

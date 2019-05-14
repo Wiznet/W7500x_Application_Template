@@ -157,4 +157,5 @@ void set_dhcp_mode(void);
 void set_static_mode(void);
 void set_mac(uint8_t *mac);
 
+
 #endif /* S2E_PACKET_H_ */
