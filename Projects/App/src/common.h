@@ -8,7 +8,7 @@
 /* Application Firmware Version ----------------------------------------------*/
 #define MAJOR_VER			7
 #define MINOR_VER			0
-#define MAINTENANCE_VER		0
+#define MAINTENANCE_VER		2
 
 #define STR_VERSION_STATUS	"NuvoOne" // or "Stable"
 //#define STR_VERSION_STATUS	"Stable"
