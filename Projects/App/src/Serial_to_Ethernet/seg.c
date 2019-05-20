@@ -51,7 +51,7 @@ static uint8_t triggercode_idx;
 static uint8_t ch_tmp[3];
 /* User's buffer / size idx */
 extern uint8_t g_send_buf[DEVICE_UART_CNT][DATA_BUF_SIZE];
-extern uint8_t g_recv_buf[DEVICE_UART_CNT][DATA_BUF_SIZE];
+extern uint8_t g_recv_buf[DEVICE_UART_CNT][DATA_BUF_SIZE+2];
 volatile uint32_t u2e_size[DEVICE_UART_CNT] = {0,};
 volatile uint32_t e2u_size[DEVICE_UART_CNT] = {0,};
 /* UDP: Peer netinfo */
@@ -88,6 +88,8 @@ uint8_t check_tcp_connect_exception(uint8_t channel);
 void set_device_status(uint8_t socket, teDEVSTATUS status);
 uint16_t get_tcp_any_port(uint8_t channel);
 static void check_n_clear_uart_recv_status(uint8_t channel);
+
+extern uint16_t sock_remained_size[_WIZCHIP_SOCK_NUM_]; //M20160411
 
 /* Public & Private functions ------------------------------------------------*/
 
@@ -1120,6 +1122,8 @@ uint16_t get_serial_data(uint8_t channel)
   */
 void ether_to_uart(uint8_t channel)
 {
+	uint16_t data_size[2]={0,};
+	
 	struct __serial_option *serial_option = (struct __serial_option *)&(get_DevConfig_pointer()->serial_option);
     struct __serial_common *serial_common = (struct __serial_common *)&(get_DevConfig_pointer()->serial_common);
     struct __network_connection *network_connection = (struct __network_connection *)(get_DevConfig_pointer()->network_connection);
@@ -1180,8 +1184,33 @@ void ether_to_uart(uint8_t channel)
 	{
 		switch(getSn_SR(channel))
 		{
-			case SOCK_UDP: // UDP_MODE
-                e2u_size[channel] = recvfrom(channel, g_recv_buf[channel], len, peerip, &peerport);
+			case SOCK_UDP: // UDP_MODE\
+				// 1014 이상이면 바로 overflow....len을 버퍼사이즈 이하로 넣어줘야 한다.
+				//  전달하는 버퍼 크기보다 큰 데이터가 넘어오는 경우 백프로 오류..누군가가 큰 패킷 보내면 바로 죽음.
+				// 최대값을 일단 DATA_BUF_SIZE로 한다.
+				if(len > DATA_BUF_SIZE) len = DATA_BUF_SIZE;
+			
+                if (sock_remained_size[channel] == 0)
+				// udp 가 2개 이상이면 framelength 도 소켓 수 만큼 있어야 한다.
+				{
+					uint16_t framesize = 0;
+					e2u_size[channel] = recvfrom(channel, (uint8_t *)(&g_recv_buf[channel][2]), len, peerip, &peerport);
+					framesize = (uint16_t)(sock_remained_size[channel] + e2u_size[channel]) & 0xffff;
+					printf("frame_size[%d] : %d + %d = %d \r\n", channel, e2u_size[channel], sock_remained_size[channel], framesize);
+					printf("data_size[%d] : %d \r\n", channel, e2u_size[channel] );
+					g_recv_buf[channel][0] = (framesize & 0xff00) >> 8;
+					g_recv_buf[channel][1] = (framesize & 0x00ff) ;
+					e2u_size[channel] += 2; //for nuvoone, add header length
+				}
+				else
+				{ // 프레임 헤더 없이 남은 데이터만 들어오는 경우, 이 곳에서 수행한다.
+					e2u_size[channel] = recvfrom(channel, (uint8_t *)(g_recv_buf[channel]), len, peerip, &peerport);
+					printf("data_size[%d] : %d \r\n", channel, e2u_size[channel] );
+				}
+			
+				//printf("data_size[0] : %d \r\n", data_size[0]);
+				//printf("data_size[1] : %d \r\n", data_size[1]);
+				
 				if(memcmp(peerip_tmp, peerip, 4) !=  0)
 				{
 					memcpy(peerip_tmp, peerip, 4);
@@ -1254,6 +1283,7 @@ void ether_to_uart(uint8_t channel)
 		}
 		else
 		{
+			
 			UART_Send_RB(UARTx, &txring[channel], g_recv_buf[channel], e2u_size[channel]);
 			e2u_size[channel] = 0;
 		}

@@ -73,7 +73,7 @@
 static uint16_t sock_any_port = SOCK_ANY_PORT_NUM;
 static uint16_t sock_io_mode = 0;
 static uint16_t sock_is_sending = 0;
-static uint16_t sock_remained_size[_WIZCHIP_SOCK_NUM_] = {0,}; //M20160411
+uint16_t sock_remained_size[_WIZCHIP_SOCK_NUM_] = {0,}; //M20160411
 static uint8_t  sock_pack_info[_WIZCHIP_SOCK_NUM_] = {0,};
 
 #if _WIZCHIP_ == 5200
@@ -461,6 +461,7 @@ int32_t recvfrom(uint8_t sn, uint8_t * buf, uint16_t len, uint8_t * addr, uint16
         };
     }
     sock_pack_info[sn] = PACK_COMPLETED;
+	
     switch (mr & 0x07)
     {
         case Sn_MR_UDP :
@@ -478,6 +479,7 @@ int32_t recvfrom(uint8_t sn, uint8_t * buf, uint16_t len, uint8_t * addr, uint16
                 *port = (*port << 8) + head[5];
                 sock_remained_size[sn] = head[6];
                 sock_remained_size[sn] = (sock_remained_size[sn] << 8) + head[7];
+				//printf("socket_1:sock_remained_size[%d] : %d \r\n", sn, sock_remained_size[sn] );
                 sock_pack_info[sn] = PACK_FIRST;
             }
             if(len < sock_remained_size[sn]) pack_len = len;
@@ -543,9 +545,11 @@ int32_t recvfrom(uint8_t sn, uint8_t * buf, uint16_t len, uint8_t * addr, uint16
     //if(sock_remained_size[sn] != 0) sock_pack_info[sn] |= 0x01;
     if(sock_remained_size[sn] != 0) sock_pack_info[sn] |= PACK_REMAINED;
     //
+
+	//printf("socket_2:sock_remained_size[%d] : %d \r\n", sn, sock_remained_size[sn] );
+
     return pack_len;
 }
-
 
 int8_t  ctlsocket(uint8_t sn, ctlsock_type cstype, void* arg)
 {

@@ -34,7 +34,7 @@ uint8_t flag_fw_from_network_timeout = DISABLE;
 uint8_t flag_fw_from_server_failed = DISABLE;
 static uint16_t any_port = 0;
 
-extern uint8_t g_recv_buf[DEVICE_UART_CNT][DATA_BUF_SIZE];
+extern uint8_t g_recv_buf[DEVICE_UART_CNT][DATA_BUF_SIZE+2];
 
 void device_set_factory_default(void)
 {

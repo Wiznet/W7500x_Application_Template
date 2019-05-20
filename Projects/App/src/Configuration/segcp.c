@@ -1413,6 +1413,9 @@ uint16_t proc_SEGCP_udp(uint8_t* segcp_req, uint8_t* segcp_rep)
 			{
 				treq = segcp_req;
 				trep = segcp_rep;
+
+				// NEED TO FIX!!!!
+				// max length 확인 필요. 전달하는 버퍼 크기보다 큰 데이터가 넘어오는 경우 백프로 오류..누군가가 큰 패킷 보내면 바로 죽음. 여기서 len=CONFIG_BUF_SIZE 가 넘지 않도록 해준다음 아래 내용을 호출해야 한다.
 				len = recvfrom(SEGCP_UDP_SOCK, treq, len, destip, &destport);
 				treq[len-1] = 0;
 
@@ -1513,6 +1516,9 @@ uint16_t proc_SEGCP_tcp(uint8_t* segcp_req, uint8_t* segcp_rep)
 			{
 				treq = segcp_req;
 				trep = segcp_rep;
+				
+				// len최대값을 넣어주는 부분이 필요!!!! 전달하는 버퍼 크기보다 큰 데이터가 넘어오는 경우 백프로 오류..누군가가 큰 패킷 보내면 바로 죽음.
+				// 여기서 len=CONFIG_BUF_SIZE 가 넘지 않도록 해준다음 아래 내용을 호출해야 한다.
 				len = recv(SEGCP_TCP_SOCK,treq,len);
 				treq[len-1] = 0x00;
 

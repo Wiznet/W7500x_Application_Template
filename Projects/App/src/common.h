@@ -8,7 +8,8 @@
 /* Application Firmware Version ----------------------------------------------*/
 #define MAJOR_VER			7
 #define MINOR_VER			0
-#define MAINTENANCE_VER		2
+#define MAINTENANCE_VER		3
+
 
 #define STR_VERSION_STATUS	"NuvoOne" // or "Stable"
 //#define STR_VERSION_STATUS	"Stable"
@@ -49,6 +50,7 @@
 
 /* Buffer size ---------------------------------------------------------------*/
 #define DATA_BUF_SIZE		1024
+//#define DATA_BUF_SIZE		512
 #define CONFIG_BUF_SIZE		512
 
 /*  Available board list -----------------------------------------------------*/

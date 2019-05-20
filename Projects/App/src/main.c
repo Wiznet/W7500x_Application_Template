@@ -69,7 +69,7 @@ void TimingDelay_Decrement(void);
 static __IO uint32_t TimingDelay;
 /* Public variables ----------------------------------------------------------*/
 uint8_t g_send_buf[DEVICE_UART_CNT][DATA_BUF_SIZE];
-uint8_t g_recv_buf[DEVICE_UART_CNT][DATA_BUF_SIZE];
+uint8_t g_recv_buf[DEVICE_UART_CNT][DATA_BUF_SIZE+2];
 uint8_t flag_check_phylink = 0;
 
 /**

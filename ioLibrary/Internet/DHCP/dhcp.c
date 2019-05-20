@@ -612,7 +612,9 @@ int8_t parseDHCPMSG(void)
    
    if((len = getSn_RX_RSR(DHCP_SOCKET)) > 0)
    {
-   	len = recvfrom(DHCP_SOCKET, (uint8_t *)pDHCPMSG, len, svr_addr, &svr_port);
+	// NEED TO FIX!!!!
+	// max length 확인 필요. 전달하는 버퍼 크기보다 큰 데이터가 넘어오는 경우 백프로 오류..누군가가 큰 패킷 보내면 바로 죽음. 여기서 len=DATA_BUF_SIZE 가 넘지 않도록 해준다음 아래 내용을 호출해야 한다.
+	   len = recvfrom(DHCP_SOCKET, (uint8_t *)pDHCPMSG, len, svr_addr, &svr_port);
    #ifdef _DHCP_DEBUG_   
       printf("DHCP message : %d.%d.%d.%d(%d) %d received. \r\n",svr_addr[0],svr_addr[1],svr_addr[2], svr_addr[3],svr_port, len);
    #endif   
