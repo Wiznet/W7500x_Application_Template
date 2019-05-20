@@ -220,3 +220,7 @@ Projects/Boot/W7500x_Application_uvproj.bak
 Projects/Boot/W7500x_Application_W7500x_Application_Boot.dep
 ioLibrary/Ethernet/socket.h~RF242c21.TMP
 ioLibrary/Ethernet/socket.h~RF26a7b0.TMP
+Projects/App/W7500x_Application.uvgui.javak
+Projects/App/lst/startup_w7500x.lst
+Projects/App/obj/W7500x_Application_App.bin
+Projects/Boot/W7500x_Application.uvgui.javak
