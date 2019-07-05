@@ -86,9 +86,9 @@ int main(void)
 	W7500x_Init();					// W7500x MCU Initialization
 	W7500x_WZTOE_Init();			// W7500x WZTOE (Hardwired TCP/IP stack) Initialization 
 	W7500x_Board_Init();			// W7500x Board Initialization 
-	Mac_Conf();						// Set the MAC address to WIZCHIP 
 	IO_Configuration();				// GPIO Initialization 
 	load_DevConfig_from_storage();	// Load the Configuration data 
+	Mac_Conf();						// Set the MAC address to WIZCHIP 
 	
 	for(i=0; i<DEVICE_UART_CNT; i++)
 	{
